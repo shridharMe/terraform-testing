@@ -1,0 +1,1 @@
+https://newcontext-oss.github.io/kitchen-terraform/tutorials/extensive_kitchen_terraform.html
