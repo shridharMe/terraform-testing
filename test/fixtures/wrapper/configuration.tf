@@ -30,7 +30,7 @@ module "extensive_kitchen_terraform" {
   key_pair_public_key = "${file("${path.module}/../../assets/key_pair.pub")}"
 
   # The source of the module is the root directory of the Terraform project
-  source                   = "../../../"
+  source                   = "../../../modules/"
   subnet_availability_zone = "${var.subnet_availability_zone}"
 }
 

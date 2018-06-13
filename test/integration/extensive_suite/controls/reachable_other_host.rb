@@ -11,21 +11,7 @@ reachable_other_host_id =
 control "reachable_other_host" do
   desc "Verifies that the other host is reachable from the current host"
 
-  describe "The other host" do
-    subject do
-      # host is a resource provided by InSpec
-      host(
-        # ec2 is a resource provided by awspec
-        ec2(reachable_other_host_id).public_ip_address
-      )
-    end
-
-    before do
-      sleep 5
-    end
-
-    it "is reachable" do
-      is_expected.to be_reachable
-    end
+ describe host("#{reachable_other_host_id}", port: 22, protocol: 'tcp') do
+    it { should be_reachable }
   end
 end

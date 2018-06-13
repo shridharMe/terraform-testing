@@ -5,9 +5,12 @@
     - terraform_version: "0.11.7"
     - rvm1_rubies: ['ruby-2.4.4']
     - rvm1_user: 'vagrant'
+    - awscli_pip_package: 'python-pip'
+    - awscli_version: 1.11.73
   roles:
   - secfigo.terraform        
   - rvm_io.ruby
+  - tommarshall.awscli
         
 
  

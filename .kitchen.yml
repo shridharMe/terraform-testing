@@ -15,7 +15,7 @@ transport:
 
   # The generated key pair is configured to be used for the SSH authentication
   # performed by InSpec
-  ssh_key: test/assets/key_pair
+  ssh_key: /tmp/terraform-test.pem
 
 verifier:
   name: terraform
@@ -29,9 +29,9 @@ platforms:
 
     driver:
       variables:
-        instances_ami: ami-ae7bfdb8
+        instances_ami: ami-ee6a718a
         instances_ami_operating_system_name: centos
-        subnet_availability_zone: us-east-1a
+        subnet_availability_zone: eu-west-2a
 
     transport:
       username: centos
