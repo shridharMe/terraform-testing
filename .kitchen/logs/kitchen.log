@@ -1,6 +1,0 @@
-W, [2018-06-12T20:22:36.590286 #14473]  WARN -- Kitchen: Running command `terraform version`
-I, [2018-06-12T20:22:36.612356 #14473]  INFO -- Kitchen: Terraform v0.11.7
-I, [2018-06-12T20:22:37.758073 #14473]  INFO -- Kitchen: + provider.aws v0.1.4
-I, [2018-06-12T20:22:37.758586 #14473]  INFO -- Kitchen: + provider.random v1.3.1
-I, [2018-06-12T20:22:37.759238 #14473]  INFO -- Kitchen: 
-W, [2018-06-12T20:22:37.759784 #14473]  WARN -- Kitchen: Terraform v0.11.7 is supported
