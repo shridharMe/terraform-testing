@@ -30,6 +30,7 @@ variable "subnet_availability_zone" {
 
 provider "aws" {
   version = "~> 0.1"
+  region = "eu-west-2"
 }
 
 provider "random" {

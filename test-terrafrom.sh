@@ -1,4 +1,4 @@
-#! /usr/bin/env bash
+#!/bin/bash
 
 # Unset AWS STS session environment variables
 function drop_aws_sts_session {
@@ -11,15 +11,19 @@ function drop_aws_sts_session {
 # Export AWS STS session environment variables
 function export_aws_sts_session {
   drop_aws_sts_session
-  session="$(aws sts get-session-token --output=json)"
-  AWS_ACCESS_KEY_ID="$(echo $session | jq -r .Credentials.AccessKeyId)"
-  AWS_DEFAULT_REGION="$1"
-  AWS_SECRET_ACCESS_KEY="$(echo $session | jq -r .Credentials.SecretAccessKey)"
-  AWS_SESSION_TOKEN="$(echo $session | jq -r .Credentials.SessionToken)"
-  export AWS_ACCESS_KEY_ID
-  export AWS_DEFAULT_REGION
-  export AWS_SECRET_ACCESS_KEY
-  export AWS_SESSION_TOKEN
+    seed=$(date +%s)
+     role={$1}
+    data=$(aws --profile devops sts assume-role --role-arn ${role} --role-session-name cpw${seed})
+    if [ -z "${data}" ]; then
+        echo "!!! Error getting a valid session. Please fix it."
+        exit 1
+    fi
+
+    export AWS_ACCESS_KEY_ID=$(echo ${data} | sed 's/.*AccessKeyId": "\([A-Za-z0-9\/+=]*\).*/\1/')
+    export AWS_SECRET_ACCESS_KEY=$(echo ${data} | sed 's/.*SecretAccessKey": "\([A-Za-z0-9\/+=]*\).*/\1/')
+    export AWS_SESSION_TOKEN=$(echo ${data} | sed 's/.*SessionToken": "\([A-Za-z0-9\/+=]*\).*/\1/')
+    export AWS_SECURITY_TOKEN=$(echo ${data} | sed 's/.*SessionToken": "\([A-Za-z0-9\/+=]*\).*/\1/')
+     echo "AWS session set"
 }
 
 # Workaround for https://github.com/hashicorp/terraform/issues/17655
@@ -44,10 +48,10 @@ bundle exec kitchen verify centos
 # Destroy the Terraform state using the Terraform fixture configuration
 bundle exec kitchen destroy centos
 
-export_aws_sts_session "us-west-2"
+#export_aws_sts_session "us-west-2"
 
 # Perform the same steps for Ubuntu in us-west-2
-bundle exec kitchen test ubuntu
+#bundle exec kitchen test ubuntu
 
 unset TF_WARN_OUTPUT_ERRORS
 drop_aws_sts_session
