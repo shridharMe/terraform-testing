@@ -19,6 +19,6 @@ Vagrant.configure(2) do |config|
     ansible.raw_arguments  = ["-connection=local"]
     #ansible.galaxy_command = 'ansible-galaxy install rvm_io.ruby --roles-path=/home/vagrant/.ansible/roles --ignore-errors --force'
     #ansible.galaxy_command = 'ansible-galaxy install secfigo.terraform --roles-path=/home/vagrant/.ansible/roles --ignore-errors --force'
-    ansible.playbook = "test.yml"
+    ansible.playbook = "setup.yml"
   end 
 end
