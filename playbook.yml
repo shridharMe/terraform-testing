@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: all
   become: true
   vars:
     - terraform_version: "0.11.7"
@@ -8,41 +8,3 @@
   roles:
   - secfigo.terraform 
   - tommarshall.awscli       
-
-  tasks:
-
-  - name: Install yum packages using a list
-    yum:
-     name: 
-      - gcc-c++ 
-      - patch       
-      - zlib-devel
-      - libyaml-devel 
-      - libffi-devel 
-      - openssl-devel   
-      - autoconf 
-      - automake 
-      - libtool 
-      - bison
-      - sqlite-devel 
-
-  - name: Install ruby
-    shell: | 
-      #curl -k -sSL https://rvm.io/mpapis.asc | gpg --import 
-      gpg2 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
-      curl -k -L get.rvm.io | bash -s stable
-      source /home/vagrant/.rvm/scripts/rvm
-      rvm reload
-      rvm requirements run
-      rvm install 2.4.4
-      rvm use  2.4.4 --default
-      ruby --version
-      yum install rubygems -y
-      gem update
-      gem update --system
-      echo "gem: --no-document" > ~/.gemrc
-      gem install bundler      
-      gem install kitchen-terraform --version 3.3.1
-      bundle install
-
- 
