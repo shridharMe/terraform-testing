@@ -8,17 +8,9 @@ terraform {
 
 # Input Variable Configuration
 
-variable "instances_ami" {
+variable "ami_id" {
   description = "The Amazon Machine Image (AMI) to use for the AWS EC2 instances"
   type        = "string"
-}
-
-variable "key_pair_public_key" {
-  description = <<EOD
-The public key material to use for SSH authentication with the instances
-EOD
-
-  type = "string"
 }
 
 variable "subnet_availability_zone" {
@@ -41,49 +33,25 @@ provider "random" {
 
 # These aws_instances will be targeted with the operating_system control and the
 # reachable_other_host control
-resource "aws_instance" "remote_group" {
-  ami           = "${var.instances_ami}"
-  count         = 1
-  instance_type = "t2.micro"
-  key_name      = "terraform-test"
-  subnet_id     = "${aws_subnet.extensive_tutorial.id}"
 
-  tags {
-    Name      = "kitchen-terraform-test-target-${count.index}"
-    Terraform = "true"
-  }
+module "ec2" {
+  source = "git::https://BITBUCKET_CREDENTIALS@bitbucket.org/DCGOnline/terraform_modules.git//ec2?ref=DHD-49-create-central-repositories-for-m"
 
-  vpc_security_group_ids = ["${aws_security_group.extensive_tutorial.id}"]
+  #source               ="git::git@bitbucket.org:DCGOnline/terraform_modules.git//ec2?ref=master"
+  key_name             = "${var.key_name}"
+  name                 = "ec2-terraform-test"
+  environment          = "ec2-test"
+  resource_type_tag    = "resource_type_tag"
+  subnet_ids           = ["${aws_subnet.extensive_tutorial.id}"]
+  vpc_id               = "${aws_vpc.extensive_tutorial.id}"
+  security_groups      = ["${aws_security_group.instance-app-sg.id}"]
+  ami_id               = "${var.ami_id}"
+  type                 = "t2.micro"
+  environment          = "environment"
+  service_tag          = "service_tag"
+  servicecomponent_tag = "servicecomponent_tag"
+  networktier_tag      = "networktier_tag"
 }
-
-# The reachable_other_host control will attempt to connect to this aws_instance
-# from each of the remote_group aws_instances which will verify the configuration
-# of the associated aws_security_group
-resource "aws_instance" "reachable_other_host" {
-  ami                         = "${var.instances_ami}"
-  associate_public_ip_address = true
-  instance_type               = "t2.micro"
-  key_name                    = "terraform-test"
-  subnet_id                   = "${aws_subnet.extensive_tutorial.id}"
-
-  tags {
-    Name      = "kitchen-terraform-reachable-other-host"
-    Terraform = "true"
-  }
-
-  vpc_security_group_ids = ["${aws_security_group.extensive_tutorial.id}"]
-}
-
-/*resource "aws_key_pair" "extensive_tutorial" {
-  key_name = "kitchen-terraform-${random_string.key_name.result}"
-
-  public_key = "${var.key_pair_public_key}"
-}*/
-
-/*resource "random_string" "key_name" {
-  length  = 9
-  special = false
-}*/
 
 resource "aws_security_group" "extensive_tutorial" {
   description = "Allow all inbound traffic"
